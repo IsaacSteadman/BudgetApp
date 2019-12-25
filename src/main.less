@@ -166,3 +166,18 @@ table.edit-table {
   border-collapse: collapse;
 }
 
+table#output {
+  border-collapse: collapse;
+  >thead>tr {
+    border-top: solid 1px black;
+  }
+  th,td {
+    border-right: solid 1px black;
+  }
+  th:first-child,td:first-child {
+    border-left: solid 1px black;
+  }
+  tr {
+    border-bottom: solid 1px black;
+  }
+}
