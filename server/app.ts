@@ -20,6 +20,7 @@ if (CORS) {
 }
 
 app.use(express.static(resolve(__dirname, '../dist')));
+app.use('/icons', express.static(resolve(__dirname, '../icons')));
 app.use(bodyParser.json({limit: '50mb'}));
 
 if (DEBUG) {

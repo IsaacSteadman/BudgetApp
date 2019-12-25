@@ -3,11 +3,37 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Kontract | Control Panel</title>
+  <title>Budgeting | IsaacSteadman.com</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" type="text/css" media="screen" href="main.less">
   <script src="main.ts"></script>
 </head>
 <body>
+  <h2>Daily</h2>
+  <table id="daily" class="edit-table"></table>
+  <h2>Dayoffly</h2>
+  <table id="dayoffly" class="edit-table"></table>
+  <h2>Business daily</h2>
+  <table id="business-daily" class="edit-table"></table>
+  <h2>Business Weekly</h2>
+  <table id="business-weekly" class="edit-table"></table>
+  <h2>Weekly</h2>
+  <table id="weekly" class="edit-table"></table>
+  <h2>Monthly</h2>
+  <table id="monthly" class="edit-table"></table>
+  <h2>Quarterly</h2>
+  <table id="quarterly" class="edit-table"></table>
+  <h2>Half-yearly</h2>
+  <table id="half-yearly" class="edit-table"></table>
+  <h2>Yearly</h2>
+  <table id="yearly" class="edit-table"></table>
+  <h2>Results</h2>
+  <span>Yearly Spend (USD)</span>
+  <table id="output">
+    <thead><tr><th>Priority Number</th><th>Priority Subtotal</th><th>Cumulative Priority Sum</th><th>Estimated Required Gross Income for Sum</th></tr></thead>
+    <tbody></tbody>
+  </table>
+  Open a budget: <input id="load-file" type="file"/> <br/>
+  Save this budget: <input id="save-file-name" type="text"/>.json <button id="save-file">Save</button>
 </body>
 </html>
