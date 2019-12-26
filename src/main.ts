@@ -117,7 +117,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     weekly, monthly, quarterly, halfYearly, yearly
   ];
   doms.forEach(dom => {
-    dom.innerHTML = '<thead><tr><th>Line Item Name</th><th>Priority</th><th>amount (USD)</th><th class="adder"></th></tr></thead><tbody></tbody>';
+    dom.innerHTML = '<thead><tr><th>Line Item Name</th><th>Priority</th><th>Amount (USD)</th><th class="adder"></th></tr></thead><tbody></tbody>';
   });
   const multipliers = [
     365.25, 111.36, 365.25 - 111.36, (365.25 / 7) - 1,
@@ -135,7 +135,13 @@ document.addEventListener('DOMContentLoaded', async function () {
   };
   const columns = 3;
   const datas: { itemName: string, priority: number, amount: number }[][] = doms.map(x => ([]));
-  const tables = doms.map((dom, i) => new EditTable(datas[i], dom, budgetColSpec, true));
+  const tables = doms.map((dom, i) => {
+    const tbl = new EditTable(datas[i], dom, budgetColSpec, true)
+    tbl.createDefaultData = arg => {
+      return {itemName: 'Untitled', priority: 0, amount: 0};
+    };
+    return tbl;
+  });
   const pieChart = new PieChart(budgetPieChart, 256, [['red', 'black'], ['green', 'black'], ['blue', 'white'], ['yellow', 'black'], ['orange', 'black'], ['purple', 'white'], ['cyan', 'black'], ['pink', 'black']])
   const onChange = function () {
     const priArr = [];
