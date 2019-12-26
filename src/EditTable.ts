@@ -424,6 +424,14 @@ export class EditTable {
       const cs = this.colSpec[i];
       const data = rowData[cs.attrName];
       dispEdit(cs, td, data, rowData);
+      const inputs = td.getElementsByTagName('input');
+      for (let i = 0; i < inputs.length; ++i) {
+        inputs[i].addEventListener('keydown', this);
+      }
+      const textareas = td.getElementsByTagName('textarea');
+      for (let i = 0; i < textareas.length; ++i) {
+        textareas[i].addEventListener('keydown', this);
+      }
     }
     const control = tr.cells[this.controlColumn];
     control.innerHTML = '';
@@ -473,17 +481,20 @@ export class EditTable {
     }
     return changed;
   }
+  doneRow(tr: HTMLTableRowElement) {
+    const changed = this.saveRow(tr);
+    this.makeStatic(tr);
+    if (changed) {
+      this.onChangeCallback(this, tr.rowIndex - 1, MSG_CHANGED);
+    }
+  }
   handleEvent(e: UIEvent) {
     const tgt = <HTMLElement>e.currentTarget;
     if (tgt.getAttribute('data-action') != null) {
       const action = tgt.getAttribute('data-action');
       const tr = <HTMLTableRowElement>tgt.parentElement.parentElement;
       if (action === 'done') {
-        const changed = this.saveRow(tr);
-        this.makeStatic(tr);
-        if (changed) {
-          this.onChangeCallback(this, tr.rowIndex - 1, MSG_CHANGED);
-        }
+        this.doneRow(tr);
       } else if (action === 'close') {
         this.makeStatic(tr);
       } else if (action === 'edit') {
@@ -504,6 +515,19 @@ export class EditTable {
         tr.parentElement.removeChild(tr);
         this.backingData.splice(dataIndex, 1);
         this.onChangeCallback(this, dataIndex, MSG_REMOVED);
+      }
+    } else if (e.type === 'keydown' && tgt.parentElement.tagName === 'TD') {
+      const tr = <HTMLTableRowElement>tgt.parentElement.parentElement;
+      if (tgt.tagName === 'INPUT') {
+        if ((<KeyboardEvent>e).keyCode === 13) {
+          this.doneRow(tr);
+        }
+        e.preventDefault();
+      } else if (tgt.tagName === 'TEXTAREA') {
+        if ((<KeyboardEvent>e).ctrlKey && (<KeyboardEvent>e).keyCode === 13) {
+          this.doneRow(tr);
+        }
+        e.preventDefault();
       }
     }
   }
