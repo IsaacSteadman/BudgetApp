@@ -29,6 +29,7 @@ export class PieChart {
     const g = this.pieGroup;
     const tg = this.textGroup;
     g.innerHTML = '';
+    tg.innerHTML = '';
     for (let i = 0; i < data.length; ++i) {
       const theta = cumrads[i];
       const theta1 = cumrads[i + 1];
