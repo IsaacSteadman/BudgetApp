@@ -521,13 +521,13 @@ export class EditTable {
       if (tgt.tagName === 'INPUT') {
         if ((<KeyboardEvent>e).keyCode === 13) {
           this.doneRow(tr);
+          e.preventDefault();
         }
-        e.preventDefault();
       } else if (tgt.tagName === 'TEXTAREA') {
         if ((<KeyboardEvent>e).ctrlKey && (<KeyboardEvent>e).keyCode === 13) {
           this.doneRow(tr);
+          e.preventDefault();
         }
-        e.preventDefault();
       }
     }
   }
