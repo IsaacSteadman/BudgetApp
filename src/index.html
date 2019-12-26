@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,6 +9,7 @@
   <link rel="stylesheet" type="text/css" media="screen" href="main.less">
   <script src="main.ts"></script>
 </head>
+
 <body>
   <h2>Daily</h2>
   <table id="daily" class="edit-table"></table>
@@ -27,13 +29,26 @@
   <table id="half-yearly" class="edit-table"></table>
   <h2>Yearly</h2>
   <table id="yearly" class="edit-table"></table>
-  <h2>Results</h2>
-  <span>Yearly Spend (USD)</span>
-  <table id="output">
-    <thead><tr><th>Priority Number</th><th>Priority Subtotal</th><th>Cumulative Priority Sum</th><th>Estimated Required Gross Income for Sum</th></tr></thead>
-    <tbody></tbody>
-  </table>
-  Open a budget: <input id="load-file" type="file"/> <br/>
-  Save this budget: <input id="save-file-name" type="text"/>.json <button id="save-file">Save</button>
+  <div id="results">
+    <h2>Results</h2>
+    <span>Yearly Spend (USD)</span>
+    <table id="output">
+      <thead>
+        <tr>
+          <th>Priority Number</th>
+          <th>Priority Subtotal</th>
+          <th>Cumulative Priority Sum</th>
+          <th>Estimated Required Gross Income for Sum</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    Open a budget: <input id="load-file" type="file" /> <br />
+    Save this budget: <input id="save-file-name" type="text" />.json <button id="save-file">Save</button> <br />
+    <h2>Budget pie chart</h2>
+    <svg id="pie-chart" viewBox="0 0 512 512" width="512" height="512">
+    </svg>
+  </div>
 </body>
+
 </html>

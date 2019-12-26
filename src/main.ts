@@ -1,6 +1,7 @@
 import { EditTable, ValidColSpec } from "./EditTable";
 import { loadedImagesPromise } from "./icons";
 import { getPromiseFileReader, FR_AS_TXT, saveAs, saveFileA } from "./FileUtils";
+import { PieChart } from "./PieChartSvg";
 
 const centsNumToDollarStr = x => {
   const cents = x % 100;
@@ -110,6 +111,7 @@ document.addEventListener('DOMContentLoaded', async function () {
   const budgetFileLoad = <HTMLInputElement>document.getElementById('load-file');
   const budgetSaveFileName = <HTMLInputElement>document.getElementById('save-file-name');
   const budgetSaveFile = <HTMLInputElement>document.getElementById('save-file');
+  const budgetPieChart = <SVGSVGElement><unknown>document.getElementById('pie-chart');
   const doms = [
     daily, dayoffly, businessDaily, businessWeekly,
     weekly, monthly, quarterly, halfYearly, yearly
@@ -134,17 +136,28 @@ document.addEventListener('DOMContentLoaded', async function () {
   const columns = 3;
   const datas: { itemName: string, priority: number, amount: number }[][] = doms.map(x => ([]));
   const tables = doms.map((dom, i) => new EditTable(datas[i], dom, budgetColSpec, true));
+  const pieChart = new PieChart(budgetPieChart, 256, [['red', 'black'], ['green', 'black'], ['blue', 'white'], ['yellow', 'black'], ['orange', 'black'], ['purple', 'white'], ['cyan', 'black'], ['pink', 'black']])
   const onChange = function () {
     const priArr = [];
     const dataLog = [];
+    const lineItems = {};
     datas.forEach((dataArr, i) => {
       const m = multipliers[i];
       dataArr.map(dataObj => {
         const { itemName, priority, amount } = dataObj;
         dataLog.push(`${itemName}: ${amount}, multiplier=${m}`);
-        addArr(priArr, priority, amount * m);
+        const total = amount * m;
+        const prev = lineItems[itemName];
+        if (prev == null) {
+          lineItems[itemName] = total;
+        } else {
+          lineItems[itemName] = total + prev;
+        }
+        addArr(priArr, priority, total);
       });
     });
+    const lineItemsArr = Object.keys(lineItems).map(k => ({num: lineItems[k], label: k})).sort((a, b) => a.num - b.num);
+    pieChart.loadData(lineItemsArr);
     console.log(dataLog);
     const outputTb = output.tBodies[0]
     outputTb.innerHTML = '';
