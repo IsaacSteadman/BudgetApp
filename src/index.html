@@ -31,7 +31,8 @@
   <table id="yearly" class="edit-table"></table>
   <div id="results">
     <h2>Results</h2>
-    <span>Yearly Spend (USD)</span>
+    <span>Yearly Spend (USD)</span> <br/>
+    Tax Filing Method: <select id="tax-filing-option"><option value="single">Single</option><option value="joint">Joint</option></select>
     <table id="output">
       <thead>
         <tr>
@@ -46,6 +47,7 @@
     Open a budget: <input id="load-file" type="file" /> <br />
     Save this budget: <input id="save-file-name" type="text" />.json <button id="save-file">Save</button> <br />
     <h2>Budget pie chart</h2>
+    Priority: <input type="number" id="pie-chart-priority" min="0" step="1"/> <br/>
     <svg id="pie-chart" viewBox="0 0 512 512" width="512" height="512">
     </svg>
   </div>

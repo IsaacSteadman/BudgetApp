@@ -54,17 +54,29 @@ const budgetColSpec: ValidColSpec[] = [
   }
 ];
 
-function calculateTaxes(income: number) {
-  const brackets = [
-    [12000, 0],
-    [9875, 0.10],
-    [40125 - 9875, 0.12],
-    [85525 - 40125, 0.22],
-    [163300 - 85525, 0.24],
-    [207350 - 163300, 0.32],
-    [518400 - 207350, 0.35],
-    [Infinity, 0.37]
-  ];
+function calculateTaxes(income: number, option: 'single' | 'joint' = 'single') {
+  const brackets = {
+    'single': [
+      [12400, 0],
+      [9875, 0.10],
+      [40125 - 9875, 0.12],
+      [85525 - 40125, 0.22],
+      [163300 - 85525, 0.24],
+      [207350 - 163300, 0.32],
+      [518400 - 207350, 0.35],
+      [Infinity, 0.37]
+    ],
+    'joint': [
+      [24800, 0],
+      [19750, 0.10],
+      [80250 - 19750, 0.12],
+      [171050 - 80250, 0.22],
+      [326600 - 171050, 0.24],
+      [414700 - 326600, 0.32],
+      [622050 - 414700, 0.35],
+      [Infinity, 0.37]
+    ]
+  }[option];
   income = Math.floor(income + 0.5);
   const incomeCalc = income;
   const socialMedicare = incomeCalc * 0.0765;
@@ -78,12 +90,12 @@ function calculateTaxes(income: number) {
   }
   return { incomeCalc, socialMedicare, taxes, netIncome: incomeCalc - socialMedicare - taxes };
 };
-function invCalculateTaxes(netIncome: number): number {
+function invCalculateTaxes(netIncome: number, option: 'single' | 'joint' = 'single'): number {
   let lower = netIncome;
   let upper = 2 * netIncome;
   while (upper - lower > 2) {
     const mid = (lower + upper) / 2;
-    const { netIncome: mine } = calculateTaxes(mid);
+    const { netIncome: mine } = calculateTaxes(mid, option);
     if (mine > netIncome) {
       upper = mid;
     } else if (mine < netIncome) {
@@ -112,6 +124,8 @@ document.addEventListener('DOMContentLoaded', async function () {
   const budgetSaveFileName = <HTMLInputElement>document.getElementById('save-file-name');
   const budgetSaveFile = <HTMLInputElement>document.getElementById('save-file');
   const budgetPieChart = <SVGSVGElement><unknown>document.getElementById('pie-chart');
+  const pieChartPriInput = <HTMLInputElement>document.getElementById('pie-chart-priority');
+  const taxFilingOption = <HTMLSelectElement>document.getElementById('tax-filing-option');
   const doms = [
     daily, dayoffly, businessDaily, businessWeekly,
     weekly, monthly, quarterly, halfYearly, yearly
@@ -142,28 +156,31 @@ document.addEventListener('DOMContentLoaded', async function () {
     };
     return tbl;
   });
-  const pieChart = new PieChart(budgetPieChart, 256, [['red', 'black'], ['green', 'black'], ['blue', 'white'], ['yellow', 'black'], ['orange', 'black'], ['purple', 'white'], ['cyan', 'black'], ['pink', 'black']])
+  const pieChart = new PieChart(budgetPieChart, 256, [['red', 'black'], ['green', 'black'], ['blue', 'white'], ['yellow', 'black'], ['orange', 'black'], ['purple', 'white'], ['cyan', 'black'], ['pink', 'black']]);
   const onChange = function () {
     const priArr = [];
     const dataLog = [];
-    const lineItems = {};
+    const pieChartLineItems = {};
+    const priPieChart = +pieChartPriInput.value;
     datas.forEach((dataArr, i) => {
       const m = multipliers[i];
       dataArr.map(dataObj => {
         const { itemName, priority, amount } = dataObj;
         dataLog.push(`${itemName}: ${amount}, multiplier=${m}`);
         const total = amount * m;
-        const prev = lineItems[itemName];
-        if (prev == null) {
-          lineItems[itemName] = total;
-        } else {
-          lineItems[itemName] = total + prev;
+        if (priority <= priPieChart) {
+          const prev = pieChartLineItems[itemName];
+          if (prev == null) {
+            pieChartLineItems[itemName] = total;
+          } else {
+            pieChartLineItems[itemName] = total + prev;
+          }
         }
         addArr(priArr, priority, total);
       });
     });
-    const lineItemsArr = Object.keys(lineItems).map(k => ({num: lineItems[k], label: k})).sort((a, b) => a.num - b.num);
-    pieChart.loadData(lineItemsArr);
+    const pieChartLineItemsArr = Object.keys(pieChartLineItems).map(k => ({num: pieChartLineItems[k], label: k})).sort((a, b) => a.num - b.num);
+    pieChart.loadData(pieChartLineItemsArr);
     console.log(dataLog);
     const outputTb = output.tBodies[0]
     outputTb.innerHTML = '';
@@ -179,7 +196,7 @@ document.addEventListener('DOMContentLoaded', async function () {
       }</td><td>\$${
         centsNumToDollarStr((sum + 0.5) | 0)
       }</td><td>\$${
-        invCalculateTaxes(((sum + 0.5) | 0) / 100)
+        invCalculateTaxes(((sum + 0.5) | 0) / 100, <'single' | 'joint'>taxFilingOption.value)
       }</td>`;
       outputTb.appendChild(tr);
     }
@@ -208,6 +225,8 @@ document.addEventListener('DOMContentLoaded', async function () {
   });
   budgetSaveFile.addEventListener('click', e => {
     saveAs(JSON.stringify(datas), budgetSaveFileName.value + '.json');
-  })
+  });
+  pieChartPriInput.addEventListener('change', onChange);
+  taxFilingOption.addEventListener('change', onChange);
   tables.forEach(tbl => tbl.onChangeCallback = onChange);
 });

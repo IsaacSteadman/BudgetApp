@@ -26,6 +26,10 @@ export class PieChart {
     const cumsums = this.data.map(x => sum += x.num);
     cumsums.unshift(0);
     const cumrads = cumsums.map(x => (x * TAU) / sum);
+    const colorAlloc = data.map((x, i) => {
+      const ri = data.length - i - 1;
+      return this.colors[ri % this.colors.length;]
+    });
     const g = this.pieGroup;
     const tg = this.textGroup;
     g.innerHTML = '';
@@ -45,7 +49,7 @@ export class PieChart {
       const p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
       p.setAttribute('d', `M${r},${r}L${sx},${sy}A${r},${r},0,${theta1 - theta >= 0.5 * TAU ? '1' : '0'},1,${dx},${dy}`);
       p.style.stroke = 'none';
-      const [fill, labelColor] = this.colors[i % this.colors.length]
+      const [fill, labelColor] = colorAlloc[i];
       p.style.fill = fill;
       g.appendChild(p);
       const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
