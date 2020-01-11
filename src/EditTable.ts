@@ -267,7 +267,7 @@ function dispEdit(cs: ValidColSpec, td: HTMLTableDataCellElement, data: any, who
         if (cs.type === 'single-line-text' || cs.type === 'link-text' || cs.type == 'password-text') {
           (<HTMLInputElement>elem).type = 'text';
           elem.style.width = '100%';
-          elem.style.height = 'fit-content'
+          // elem.style.height = 'fit-content'
         }
         elem.value = str;
         td.innerHTML = '';
