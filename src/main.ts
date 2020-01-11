@@ -3,7 +3,7 @@ import { loadedImagesPromise } from "./icons";
 import { getPromiseFileReader, FR_AS_TXT, saveAs, saveFileA } from "./FileUtils";
 import { PieChart } from "./PieChartSvg";
 
-const centsNumToDollarStr = x => {
+const centsNumToDollarStr = (x: number) => {
   const cents = x % 100;
   const dollars = (x - cents) / 100;
   if (cents < 10) {
@@ -12,7 +12,7 @@ const centsNumToDollarStr = x => {
     return `${dollars}.${cents}`;
   }
 };
-const dollarStrToCentsNum = x => {
+const dollarStrToCentsNum = (x: string) => {
   if (x.length === 0) return 0;
   const parts = x.split('.');
   if (parts.length > 2) {
@@ -40,7 +40,7 @@ const budgetColSpec: ValidColSpec[] = [
     min: 0,
     step: 1,
     max: null,
-    valueToNum: x => x.length === 0 ? 0 : +x;
+    valueToNum: x => x.length === 0 ? 0 : +x
   },
   {
     attrName: 'amount',
