@@ -51,6 +51,59 @@
     <svg id="pie-chart" viewBox="0 0 512 512" width="512" height="512">
     </svg>
   </div>
+  <div id="tax-calc" style="display: none">
+    <h2>Tax Calculator</h2>
+    Calculation Direction <select id="calculation-direction" value="pre-to-post">
+      <option value="pre-to-post">Pre-tax income to post-tax income</option>
+      <option value="post-to-pre">Post-tax income to pre-tax income</option>
+    </select>
+    Pretax income <input id="pretax-income" type="number"/> <br/>
+    income after taxes, social security and medicare <input id="posttax-income" type="number"/> <br/>
+  </div>
+  <div id="invest-calc" style="display: none">
+    <h2>Investing Calculator Utility</h2>
+    Average Return on Investment (%): <input id="invest-avg-return" type="number"/> <select id="invest-return-period">
+      <option value="year">Annually</option>
+      <option value="quarter">Quarterly</option>
+      <option value="month">Monthly</option>
+      <option value="week">Weekly</option>
+      <option value="day">Daily</option>
+    </select> <br/>
+    Take out taxes: <select id="invest-taxes">
+      <option value="none">No Taxes</option>
+      <option value="net-only">(3.8%)</option>
+      <option value="15-only">15%</option>
+      <option value="15-and-net">15% + 3.8%</option>
+      <option value="20-only">20%</option>
+      <option value="20-and-net">20% + 3.8%</option>
+      <option value="short-term">short-term capital gains (normal tax rate)</option>
+      <option disabled value="short-term-custom">short-term capital gains with custom tax bracket</option>
+      <option disabled value="custom">custom tax rate</option>
+    </select> <br/>
+    Money added to investments: <input id="invest-money-input" type="number"/> <select id="invest-return-period" value="month">
+      <option value="year">Annually</option>
+      <option value="quarter">Quarterly</option>
+      <option value="month">Monthly</option>
+      <option value="week">Weekly</option>
+      <option value="day">Daily</option>
+    </select> <br/>
+    Expected Annual Inflation Rate (%): <input id="invest-inflation-rate" type="number" value="2"/>
+    <select id="invest-table-period" value="year">
+      <option value="year">Annually</option>
+      <option value="quarter">Quarterly</option>
+      <option value="month">Monthly</option>
+    </select> <br/>
+    Table stop condition <select id="invest-table-stop">
+      <option value="invest-value">Stop at investment value</option>
+    </select> (value) <input id="invest-table-stop-value" type="number"/> <br/>
+    Time until investment goal reached: <span id="invest-time-to-stop"></span>
+    <table id="invest-money-schedule">
+      <thead>
+        <tr><th>Date</th><th>Nominal Dollars Added</th><th>Investment Nominal Value</th><th>Investment Real Value</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
 </body>
 
 </html>
