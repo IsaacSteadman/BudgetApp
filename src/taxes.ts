@@ -1,4 +1,4 @@
-function calculateTaxes(income: number, option: 'single' | 'joint' = 'single') {
+export function calculateTaxes(income: number, option: 'single' | 'joint' = 'single') {
     const brackets = {
       'single': [
         [12400, 0],
@@ -34,7 +34,7 @@ function calculateTaxes(income: number, option: 'single' | 'joint' = 'single') {
     }
     return { incomeCalc, socialMedicare, taxes, netIncome: incomeCalc - socialMedicare - taxes };
   };
-  function invCalculateTaxes(netIncome: number, option: 'single' | 'joint' = 'single'): number {
+  export function invCalculateTaxes(netIncome: number, option: 'single' | 'joint' = 'single'): number {
     let lower = netIncome;
     let upper = 2 * netIncome;
     while (upper - lower > 2) {

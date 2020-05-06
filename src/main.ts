@@ -2,7 +2,8 @@ import { EditTable, ValidColSpec } from "./EditTable";
 import { loadedImagesPromise } from "./icons";
 import { getPromiseFileReader, FR_AS_TXT, saveAs, saveFileA } from "./FileUtils";
 import { PieChart } from "./PieChartSvg";
-import {invCalculateTaxes} from "./taxes";
+import { invCalculateTaxes } from "./taxes";
+import { init as taxInit } from "./taxCalculator";
 
 const centsNumToDollarStr = (x: number) => {
   const cents = x % 100;
@@ -177,4 +178,5 @@ document.addEventListener('DOMContentLoaded', async function () {
   pieChartPriInput.addEventListener('change', onChange);
   taxFilingOption.addEventListener('change', onChange);
   tables.forEach(tbl => tbl.onChangeCallback = onChange);
+  await taxInit();
 });

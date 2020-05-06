@@ -51,16 +51,20 @@
     <svg id="pie-chart" viewBox="0 0 512 512" width="512" height="512">
     </svg>
   </div>
-  <div id="tax-calc" style="display: none">
+  <div id="tax-calc">
     <h2>Tax Calculator</h2>
-    Calculation Direction <select id="calculation-direction" value="pre-to-post">
+    Calculation Direction: <select id="tax-calculation-direction" value="pre-to-post">
       <option value="pre-to-post">Pre-tax income to post-tax income</option>
       <option value="post-to-pre">Post-tax income to pre-tax income</option>
-    </select>
-    Pretax income <input id="pretax-income" type="number"/> <br/>
-    income after taxes, social security and medicare <input id="posttax-income" type="number"/> <br/>
+    </select> <br/>
+    Single or Joint: <select id="tax-single-or-joint" value="single">
+      <option value="single">Single</option>
+      <option value="joint">Married Filing Jointly</option>
+    </select> <br/>
+    <span id="tax-input-label">Pre-tax income</span> (input) <input id="tax-input" type="number"/> <br/>
+    <span id="tax-output-label">Net income after taxes</span> (output) <input id="tax-output" readonly type="number"/> <br/>
   </div>
-  <div id="invest-calc" style="display: none">
+  <div id="invest-calc">
     <h2>Investing Calculator Utility</h2>
     Average Return on Investment (%): <input id="invest-avg-return" type="number"/> <select id="invest-return-period">
       <option value="year">Annually</option>
