@@ -4,6 +4,7 @@ import { getPromiseFileReader, FR_AS_TXT, saveAs, saveFileA } from "./FileUtils"
 import { PieChart } from "./PieChartSvg";
 import { invCalculateTaxes } from "./taxes";
 import { init as taxInit } from "./taxCalculator";
+import { init as investInit } from "./investCalculator";
 
 const centsNumToDollarStr = (x: number) => {
   const cents = x % 100;
@@ -179,4 +180,5 @@ document.addEventListener('DOMContentLoaded', async function () {
   taxFilingOption.addEventListener('change', onChange);
   tables.forEach(tbl => tbl.onChangeCallback = onChange);
   await taxInit();
+  await investInit();
 });

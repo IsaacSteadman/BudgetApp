@@ -82,7 +82,7 @@ export interface CustomColSpec extends ColumnSpecification {
 }
 
 export interface TriStateColSpec extends ColumnSpecification {
-  type: 'tri-state',
+  type: 'tri-state';
   triStateInput?: boolean; // defaults to false
   // true, false, null
   boolNames?: [string, string, string];
@@ -94,6 +94,11 @@ export type ValidColSpec = StaticColSpec | SingleLineTextColSpec | MultiLineText
 
 const passwordTextCopyListener = function (e: UIEvent) {
   const pre = <HTMLPreElement>(<HTMLImageElement>e.currentTarget).parentElement.children[0];
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(pre.innerText);
+    console.log('copy password successful');
+    return;
+  }
   pre.style.display = '';
   const range = document.createRange();
   range.selectNode(pre);
@@ -404,7 +409,6 @@ export class EditTable {
     this.onChangeCallback = null
     if (this.allowAddRemove) {
       const th = this.thead.rows[0].cells[this.controlColumn];
-      console.log('hello adder');
       const addImg = makeIconImage('add', this);
       th.appendChild(addImg);
     }

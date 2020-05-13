@@ -73,37 +73,43 @@
       <option value="week">Weekly</option>
       <option value="day">Daily</option>
     </select> <br/>
+    Initial Value of Investments: <input id="invest-initial-value" type="number"/><br/>
     Take out taxes: <select id="invest-taxes">
       <option value="none">No Taxes</option>
-      <option value="net-only">(3.8%)</option>
       <option value="15-only">15%</option>
       <option value="15-and-net">15% + 3.8%</option>
       <option value="20-only">20%</option>
       <option value="20-and-net">20% + 3.8%</option>
       <option value="short-term">short-term capital gains (normal tax rate)</option>
-      <option disabled value="short-term-custom">short-term capital gains with custom tax bracket</option>
+      <option value="short-term-custom">short-term capital gains with custom tax bracket</option>
       <option disabled value="custom">custom tax rate</option>
     </select> <br/>
-    Money added to investments: <input id="invest-money-input" type="number"/> <select id="invest-return-period" value="month">
+    Additional tax info: <input id="invest-taxes-custom" type="number"/> (this is the base pre-tax income if custom tax bracket specified)<br/>
+    Tax Filing Status: <select id="invest-taxes-status">
+      <option value="single">Single</option>
+      <option value="joint">Married Filing Jointly</option>
+    </select> <br/>
+    Money added to investments: <input id="invest-money-input" type="number"/> <select id="invest-money-input-period" value="month">
       <option value="year">Annually</option>
       <option value="quarter">Quarterly</option>
       <option value="month">Monthly</option>
-      <option value="week">Weekly</option>
-      <option value="day">Daily</option>
-    </select> <br/>
-    Expected Annual Inflation Rate (%): <input id="invest-inflation-rate" type="number" value="2"/>
-    <select id="invest-table-period" value="year">
+      <!--<option value="week">Weekly</option>-->
+      <!--<option value="day">Daily</option>-->
+    </select> Increasing by <input id="invest-money-input-increase" type="number" value="2"/> Percent Annually <br/>
+    Expected Annual Inflation Rate (%)): <input id="invest-inflation-rate" type="number" value="2"/> <br/>
+    Table Report Period: <select id="invest-table-period" value="year">
       <option value="year">Annually</option>
       <option value="quarter">Quarterly</option>
       <option value="month">Monthly</option>
     </select> <br/>
     Table stop condition <select id="invest-table-stop">
-      <option value="invest-value">Stop at investment value</option>
+      <option value="invest-nominal-value">Stop at Investment Nominal Value</option>
+      <option value="invest-real-value">Stop at Investment Real Value</option>
     </select> (value) <input id="invest-table-stop-value" type="number"/> <br/>
     Time until investment goal reached: <span id="invest-time-to-stop"></span>
-    <table id="invest-money-schedule">
+    <table id="invest-table">
       <thead>
-        <tr><th>Date</th><th>Nominal Dollars Added</th><th>Investment Nominal Value</th><th>Investment Real Value</th></tr>
+        <tr><th colspan="2">Date</th><th>Nominal Dollars Added</th><th>Investment Nominal Value</th><th>Investment Real Value</th></tr>
       </thead>
       <tbody></tbody>
     </table>

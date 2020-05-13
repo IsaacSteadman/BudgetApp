@@ -25,10 +25,9 @@ function onChangeLabels() {
 }
 
 function onChange() {
-  const status = singleOrJoint.value === 'single' ? 'single' : 'joint';
   if (option.value === 'pre-to-post') {
-    output.value = `${calculateTaxes(+input.value, status).netIncome}`;
+    output.value = `${calculateTaxes(+input.value, <'single' | 'joint'>singleOrJoint.value).netIncome}`;
   } else {
-    output.value = `${invCalculateTaxes(+input.value, status)}`;
+    output.value = `${invCalculateTaxes(+input.value, <'single' | 'joint'>singleOrJoint.value)}`;
   }
 }
