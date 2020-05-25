@@ -62,6 +62,13 @@ export async function init() {
   tableStopValue.addEventListener('input', onChange);
 }
 
+function formatDollars(total: number): string {
+  const dollars = Math.floor(total);
+  const cents = Math.floor(100 * (total - dollars));
+  const centsStr = '' + cents;
+  return `$${Math.floor(dollars)}.${'0'.repeat(2 - centsStr.length)}${centsStr}`;
+}
+
 function removeTaxes(value: number): number {
   if (takeOutTaxes.value === '15-only') {
     return value * 0.85;
@@ -101,7 +108,7 @@ function generateTableRow(date: string | [string, string], nominalDollars: numbe
   } else {
     tr.innerHTML = `<td>${date[0]}</td><td>${date[1]}</td>`;
   }
-  tr.innerHTML += `<td>${nominalDollars}</td><td>${investmentNominalValue}</td><td>${investmentRealValue}</td>`;
+  tr.innerHTML += `<td>${formatDollars(nominalDollars)}</td><td>${formatDollars(investmentNominalValue)}</td><td>${formatDollars(investmentRealValue)}</td>`;
   return tr;
 }
 
