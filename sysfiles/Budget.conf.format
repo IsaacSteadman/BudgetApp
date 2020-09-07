@@ -1,0 +1,17 @@
+#destination:{nginx_conf_d_dir}/Budget.conf
+#install_perms:sudo
+#install_cmd:systemctl restart nginx
+#uninstall_cmd:rm {nginx_conf_d_dir}/Budget.conf
+server {{
+  listen               443 ssl;
+  server_name          budget.isaacsteadman.com;
+    ssl_certificate {nginx_ssl_cert}; # managed by Certbot
+    ssl_certificate_key {nginx_ssl_cert_key}; # managed by Certbot
+  ssl_protocols        TLSv1 TLSv1.1 TLSv1.2;
+  ssl_ciphers          HIGH:!aNULL:!MD5;
+  location / {{
+    root               {project_dir}/dist;
+  }}
+
+
+}}
