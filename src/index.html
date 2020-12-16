@@ -74,6 +74,23 @@
       <option value="day">Daily</option>
     </select> <br/>
     Initial Value of Investments: <input id="invest-initial-value" type="number"/><br/>
+    Estimated Payments Already Made: <input id="estimated-taxes-paid" type="number" step="any"/><br/>
+    Pre-Tax Profit: <input id="pre-tax-profit" type="number" step="any"/><br/>
+    Starting Year: <input id="start-year" type="number" step="1"/><br/>
+    Starting Month: <select id="start-month">
+      <option value="0">January</option>
+      <option value="1">February</option>
+      <option value="2">March</option>
+      <option value="3">April</option>
+      <option value="4">May</option>
+      <option value="5">June</option>
+      <option value="6">July</option>
+      <option value="7">August</option>
+      <option value="8">September</option>
+      <option value="9">October</option>
+      <option value="10">November</option>
+      <option value="11">December</option>
+    </select><br/>
     Take out taxes: <select id="invest-taxes">
       <option value="none">No Taxes</option>
       <option value="15-only">15%</option>
@@ -90,8 +107,10 @@
       <option value="joint">Married Filing Jointly</option>
     </select> <br/>
     Money added to investments: <input id="invest-money-input" type="number"/> <select id="invest-money-input-period" value="month">
-      <option value="year">Annually</option>
-      <option value="quarter">Quarterly</option>
+      <option value="year-begin">Annually (before first month)</option>
+      <option value="year-end">Annually (before last month)</option>
+      <option value="quarter-begin">Quarterly (before first month)</option>
+      <option value="quarter-end">Quarterly (before last month)</option>
       <option value="month">Monthly</option>
       <!--<option value="week">Weekly</option>-->
       <!--<option value="day">Daily</option>-->
@@ -109,7 +128,14 @@
     Time until investment goal reached: <span id="invest-time-to-stop"></span>
     <table id="invest-table">
       <thead>
-        <tr><th colspan="2">Date</th><th>Nominal Dollars Added</th><th>Investment Nominal Value</th><th>Investment Real Value</th></tr>
+        <tr>
+          <th>Date</th>
+          <th>Dollars Added</th>
+          <th>Investment Value <br/> (nominal before month)</th>
+          <th>Investment Value <br/> (nominal after month)</th>
+          <th>Investment Value <br/> (real relative to start)</th>
+          <th>Memos</th>
+        </tr>
       </thead>
       <tbody></tbody>
     </table>
