@@ -19,7 +19,7 @@ let moneyAddIncrease: HTMLInputElement;
 
 let expectedAnnualInflation: HTMLInputElement;
 
-let tablePeriod: HTMLSelectElement;
+// let tablePeriod: HTMLSelectElement;
 let tableStopCondition: HTMLSelectElement;
 let tableStopValue: HTMLInputElement;
 
@@ -49,7 +49,7 @@ export async function init() {
   moneyAddPeriod = document.getElementById('invest-money-input-period') as HTMLSelectElement;
   moneyAddIncrease = document.getElementById('invest-money-input-increase') as HTMLInputElement;
   expectedAnnualInflation = document.getElementById('invest-inflation-rate') as HTMLInputElement;
-  tablePeriod = document.getElementById('invest-table-period') as HTMLSelectElement;
+  // tablePeriod = document.getElementById('invest-table-period') as HTMLSelectElement;
   tableStopCondition = document.getElementById('invest-table-stop') as HTMLSelectElement;
   tableStopValue = document.getElementById('invest-table-stop-value') as HTMLInputElement;
   investTable = document.getElementById('invest-table') as HTMLTableElement;
@@ -70,7 +70,7 @@ export async function init() {
   moneyAddPeriod.addEventListener('change', onChange);
   moneyAddIncrease.addEventListener('input', onChange);
   expectedAnnualInflation.addEventListener('input', onChange);
-  tablePeriod.addEventListener('change', onChange);
+  // tablePeriod.addEventListener('change', onChange);
   tableStopCondition.addEventListener('change', onChange);
   tableStopValue.addEventListener('input', onChange);
 
@@ -173,9 +173,9 @@ class MonthlyTableReportBuilder {
     let current: [TableState, TableState] = [initialState, initialState];
     states.push(current);
     while (!postMonthStopCondition(states, current[0])) {
-      current[1] = preMonthStep(states.slice(0, states.length - 1), current[1]);
-      current[1] = midMonthStep(states.slice(0, states.length - 1), current[1]);
-      current[1] = postMonthStep(states.slice(0, states.length - 1), current[1]);
+      current[1] = preMonthStep(states, current[1]);
+      current[1] = midMonthStep(states, current[1]);
+      current[1] = postMonthStep(states, current[1]);
       const state: TableState = {
         year: current[1].year + (current[1].month === 11 ? 1 : 0),
         month: ((current[1].month + 1) % 12) as MonthId,
@@ -250,7 +250,7 @@ const preMonthStep: MonthlyCallback = (prevStates, currentState) => {
       nextState.estimatedTaxesPaid += currentEstimatedPayment;
       nextState.memos.push(`TAX_EST: you pay $${fmtNum2(currentEstimatedPayment)} in estimated payment`);
     } else {
-      const prevEstimatedPayment = rfind(prevStates, v => [0, 5, 8].indexOf(v[0].month) !== -1);
+      const prevEstimatedPayment = rfind(prevStates, v => [0, 3, 5, 8].indexOf(v[0].month) !== -1);
       if (prevEstimatedPayment == null || prevEstimatedPayment[0].isInitial) {
         return currentState;
       }
@@ -296,7 +296,7 @@ const midMonthStep: MonthlyCallback = (prevStates, currentState) => {
 const postMonthStep: MonthlyCallback = (prevStates, currentState) => {
   const nextState = {...currentState};
   nextState.currentValue *= monthlyRoi;
-  nextState.preTaxProfit = nextState.currentValue - currentState.currentValue;
+  nextState.preTaxProfit += nextState.currentValue - currentState.currentValue;
   nextState.memos = [...currentState.memos, `GROWTH: you grew your value by ${fmtNum2((monthlyRoi - 1) * 100)}%`];
   return nextState;
 }
@@ -438,7 +438,13 @@ function fillTableOld() {
         value -= diff - removeTaxes(diff);
         prevYearValue = value;
       }
-      if (tablePeriod.value === 'month') {
+
+      tBody.appendChild(generateTableRow([`Year ${i}`,` Month ${m}`], totalAdded, value, value / inflation));
+      if (shouldTableStop(value, inflation)) {
+        break;
+      }
+
+      /*if (tablePeriod.value === 'month') {
         tBody.appendChild(generateTableRow([`Year ${i}`,` Month ${m}`], totalAdded, value, value / inflation));
         if (shouldTableStop(value, inflation)) {
           break;
@@ -450,7 +456,7 @@ function fillTableOld() {
         if (shouldTableStop(value, inflation)) {
           break;
         }
-      }
+      }*/
     }
     if (i > 100) {
       tBody.appendChild(generateTableRow(`Year ${i}`, totalAdded, value, value / inflation));
@@ -461,7 +467,7 @@ function fillTableOld() {
       return;
     }
   }
-  investTimeToStop.innerText = `${i} years and ${m} months`
+  investTimeToStop.innerText = `${i} years and ${m} months`;
 }
 
 function fillTable() {
@@ -487,6 +493,9 @@ function fillTable() {
   builder.states.forEach((x, i, states) => {
     tBody.appendChild(generateTableRowFromStateGroup(states, i));
   });
+  const months = builder.states.length % 12;
+  const years = (builder.states.length - months) / 12
+  investTimeToStop.innerText = `${years} years and ${months} months`;
 }
 
 let annualRoi: number = 0;
