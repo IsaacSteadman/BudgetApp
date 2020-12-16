@@ -172,7 +172,12 @@ class MonthlyTableReportBuilder {
     const {initialState, states, preMonthStep, midMonthStep, postMonthStep, postMonthStopCondition} = this;
     let current: [TableState, TableState] = [initialState, initialState];
     states.push(current);
+    let i = 0;
     while (!postMonthStopCondition(states, current[0])) {
+      ++i;
+      if (i > 1200) {
+        break;
+      }
       current[1] = preMonthStep(states, current[1]);
       current[1] = midMonthStep(states, current[1]);
       current[1] = postMonthStep(states, current[1]);
@@ -189,6 +194,7 @@ class MonthlyTableReportBuilder {
       states.push(current);
     }
     states.pop();
+    return i <= 1200;
   }
 }
 
@@ -489,13 +495,20 @@ function fillTable() {
     postMonthStep,
     postMonthStopCondition
   );
-  builder.execute();
+  const success = builder.execute();
   builder.states.forEach((x, i, states) => {
     tBody.appendChild(generateTableRowFromStateGroup(states, i));
   });
-  const months = builder.states.length % 12;
-  const years = (builder.states.length - months) / 12
-  investTimeToStop.innerText = `${years} years and ${months} months`;
+  if (success) {
+    const months = builder.states.length % 12;
+    const years = (builder.states.length - months) / 12
+    investTimeToStop.innerText = `${years} years and ${months} months`;
+  } else {
+    const tr = document.createElement('tr');
+    tr.innerHTML = '<td colspan="6">WARNING: TOO LONG - quiting further evaluation</td>';
+    tBody.appendChild(tr);
+    investTimeToStop.innerText = 'Way Too Long';
+  }
 }
 
 let annualRoi: number = 0;
