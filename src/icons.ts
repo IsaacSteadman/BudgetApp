@@ -22,7 +22,9 @@ export function createTrashOutlineIcon(color: string): SVGSVGElement {
   svg.setAttribute('width', '24');
   svg.setAttribute('height', '24');
   svg.setAttribute('viewBox', '0 0 24 24');
-  const p0 = mkPath('M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM8 9h8v10H8V9zm7.5-5l-1-1h-5l-1 1H5v2h14V4z');
+  const p0 = mkPath(
+    'M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM8 9h8v10H8V9zm7.5-5l-1-1h-5l-1 1H5v2h14V4z'
+  );
   p0.setAttribute('fill', color);
   const p1 = mkPath('M0 0h24v24H0V0z');
   svg.appendChild(p0);
@@ -37,13 +39,15 @@ const paths = [
   { name: 'copy', url: '/icons/copy.svg' },
   { name: 'delete', url: '/icons/delete_outline.svg' },
   { name: 'done', url: '/icons/done.svg' },
-  { name: 'edit', url: '/icons/edit.svg' }
+  { name: 'edit', url: '/icons/edit.svg' },
 ];
 
 const svgImages: { [key: string]: SVGSVGElement } = {};
 
 async function loadImages() {
-  const images = await Promise.all(paths.map(path => fetch(path.url).then(x => x.text())));
+  const images = await Promise.all(
+    paths.map((path) => fetch(path.url).then((x) => x.text()))
+  );
   for (let i = 0; i < images.length; ++i) {
     images[i] = images[i].substring(images[i].indexOf('<svg'));
   }
@@ -62,11 +66,11 @@ export const loadedImagesPromise = loadImages();
 class CustomAnimation {
   elem: HTMLElement | SVGElement;
   intervalIndex: number;
-  style: { [key: string]: (index: number) => string; };
+  style: { [key: string]: (index: number) => string };
   numFrames: number;
   durationMs: number;
   interval: any;
-  attrs: { [key: string]: (index: number) => string; };
+  attrs: { [key: string]: (index: number) => string };
   clearAtEnd: boolean;
   endData: [{ [key: string]: string }, { [key: string]: string }];
   constructor(
@@ -96,7 +100,7 @@ class CustomAnimation {
       if (!this.clearAtEnd) return;
       if (this.endData != null) {
         const [style, attrs] = this.endData;
-        const {elem} = this;
+        const { elem } = this;
         for (const k in style) {
           const attr = style[k];
           elem.style[k] = attr;
@@ -125,7 +129,10 @@ class CustomAnimation {
     }
     this.intervalIndex = 0;
     this.stepInterval();
-    this.interval = setInterval(() => this.stepInterval(), this.durationMs / this.numFrames);
+    this.interval = setInterval(
+      () => this.stepInterval(),
+      this.durationMs / this.numFrames
+    );
   }
   stop() {
     if (this.interval != null) {
@@ -144,15 +151,24 @@ function easeOut(t: number, p: number) {
 }
 
 const rippleAnim = new CustomAnimation(
-  {}, {
-    r: (index) => '' + (12 * easeOut(index / 25, 3))
-  }, 300, 42, false
+  {},
+  {
+    r: (index) => '' + 12 * easeOut(index / 25, 3),
+  },
+  300,
+  42,
+  false
 );
 
 const otherRipple = new CustomAnimation(
-  {}, {
-    'opacity': (index) => '' + 0.2 * (1 - easeIn(index / 42, 2))
-  }, 500, 42, false, [{}, { 'opacity': '0.2', 'r': '0' }]
+  {},
+  {
+    opacity: (index) => '' + 0.2 * (1 - easeIn(index / 42, 2)),
+  },
+  500,
+  42,
+  false,
+  [{}, { opacity: '0.2', r: '0' }]
 );
 
 function doRippleEffect(ev: MouseEvent) {
@@ -172,7 +188,12 @@ function doRippleEffect(ev: MouseEvent) {
   tgt.addEventListener('touchend', fn);
 }
 
-export function createIcon(action: string, clickListener: ((this: SVGSVGElement, ev: MouseEvent) => any) | { handleEvent: (ev: MouseEvent) => any }): SVGSVGElement {
+export function createIcon(
+  action: string,
+  clickListener:
+    | ((this: SVGSVGElement, ev: MouseEvent) => any)
+    | { handleEvent: (ev: MouseEvent) => any }
+): SVGSVGElement {
   const svg = <SVGSVGElement>svgImages[action].cloneNode(true);
   svg.addEventListener('click', clickListener);
   if (action === 'copy') {

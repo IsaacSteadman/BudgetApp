@@ -1,4 +1,4 @@
-import { calculateTaxes } from "./taxes";
+import { calculateTaxes } from './taxes';
 
 let avgRoi: HTMLInputElement;
 let avgRoiPeriod: HTMLSelectElement;
@@ -12,6 +12,7 @@ let startYearInput: HTMLInputElement;
 let takeOutTaxes: HTMLSelectElement;
 let taxCustomData: HTMLInputElement;
 let taxStatus: HTMLSelectElement;
+let taxYear: HTMLSelectElement;
 
 let moneyAdd: HTMLInputElement;
 let moneyAddPeriod: HTMLSelectElement;
@@ -28,33 +29,66 @@ let investTable: HTMLTableElement;
 let investTimeToStop: HTMLSpanElement;
 
 const months = [
-  'January', 'February', 'March',
-  'April', 'May', 'June',
-  'July', 'August', 'September',
-  'October', 'November', 'December'
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
 ];
 
 export async function init() {
   avgRoi = document.getElementById('invest-avg-return') as HTMLInputElement;
-  avgRoiPeriod = document.getElementById('invest-return-period') as HTMLSelectElement;
-  initialValue = document.getElementById('invest-initial-value') as HTMLInputElement;
-  estimatedTaxesPaidInput = document.getElementById('estimated-taxes-paid') as HTMLInputElement;
-  preTaxProfitInput = document.getElementById('pre-tax-profit') as HTMLInputElement;
+  avgRoiPeriod = document.getElementById(
+    'invest-return-period'
+  ) as HTMLSelectElement;
+  initialValue = document.getElementById(
+    'invest-initial-value'
+  ) as HTMLInputElement;
+  estimatedTaxesPaidInput = document.getElementById(
+    'estimated-taxes-paid'
+  ) as HTMLInputElement;
+  preTaxProfitInput = document.getElementById(
+    'pre-tax-profit'
+  ) as HTMLInputElement;
   startMonthInput = document.getElementById('start-month') as HTMLSelectElement;
   startYearInput = document.getElementById('start-year') as HTMLInputElement;
   takeOutTaxes = document.getElementById('invest-taxes') as HTMLSelectElement;
-  taxCustomData = document.getElementById('invest-taxes-custom') as HTMLInputElement;
-  taxStatus = document.getElementById('invest-taxes-status') as HTMLSelectElement;
+  taxCustomData = document.getElementById(
+    'invest-taxes-custom'
+  ) as HTMLInputElement;
+  taxYear = document.getElementById('invest-taxes-year') as HTMLSelectElement;
+  taxStatus = document.getElementById(
+    'invest-taxes-status'
+  ) as HTMLSelectElement;
   moneyAdd = document.getElementById('invest-money-input') as HTMLInputElement;
-  moneyAddPeriod = document.getElementById('invest-money-input-period') as HTMLSelectElement;
-  moneyAddIncrease = document.getElementById('invest-money-input-increase') as HTMLInputElement;
-  expectedAnnualInflation = document.getElementById('invest-inflation-rate') as HTMLInputElement;
+  moneyAddPeriod = document.getElementById(
+    'invest-money-input-period'
+  ) as HTMLSelectElement;
+  moneyAddIncrease = document.getElementById(
+    'invest-money-input-increase'
+  ) as HTMLInputElement;
+  expectedAnnualInflation = document.getElementById(
+    'invest-inflation-rate'
+  ) as HTMLInputElement;
   // tablePeriod = document.getElementById('invest-table-period') as HTMLSelectElement;
-  tableStopCondition = document.getElementById('invest-table-stop') as HTMLSelectElement;
-  tableStopValue = document.getElementById('invest-table-stop-value') as HTMLInputElement;
+  tableStopCondition = document.getElementById(
+    'invest-table-stop'
+  ) as HTMLSelectElement;
+  tableStopValue = document.getElementById(
+    'invest-table-stop-value'
+  ) as HTMLInputElement;
   investTable = document.getElementById('invest-table') as HTMLTableElement;
 
-  investTimeToStop = document.getElementById('invest-time-to-stop') as HTMLSpanElement;
+  investTimeToStop = document.getElementById(
+    'invest-time-to-stop'
+  ) as HTMLSpanElement;
 
   avgRoi.addEventListener('input', onChange);
   avgRoiPeriod.addEventListener('change', onChange);
@@ -65,6 +99,7 @@ export async function init() {
   startYearInput.addEventListener('input', onChange);
   takeOutTaxes.addEventListener('change', onChange);
   taxCustomData.addEventListener('input', onChange);
+  taxYear.addEventListener('change', onChange);
   taxStatus.addEventListener('change', onChange);
   moneyAdd.addEventListener('input', onChange);
   moneyAddPeriod.addEventListener('change', onChange);
@@ -74,19 +109,28 @@ export async function init() {
   tableStopCondition.addEventListener('change', onChange);
   tableStopValue.addEventListener('input', onChange);
 
-  startYearInput.value = `${(new Date()).getFullYear()}`;
-  startMonthInput.value = `${(new Date()).getMonth()}`
+  startYearInput.value = `${new Date().getFullYear()}`;
+  startMonthInput.value = `${new Date().getMonth()}`;
 }
 
 function formatDollars(total: number): string {
   const dollars = Math.floor(total);
   const cents = Math.floor(100 * (total - dollars));
   const centsStr = '' + cents;
-  return `$${Math.floor(dollars)}.${'0'.repeat(2 - centsStr.length)}${centsStr}`;
+  return `$${Math.floor(dollars)}.${'0'.repeat(
+    2 - centsStr.length
+  )}${centsStr}`;
 }
 
 type MonthId = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11;
-type TaxationOption = 'none' | '15-only' | '15-and-net' | '20-only' | '20-and-net' | 'short-term' | 'short-term-custom';
+type TaxationOption =
+  | 'none'
+  | '15-only'
+  | '15-and-net'
+  | '20-only'
+  | '20-and-net'
+  | 'short-term'
+  | 'short-term-custom';
 type TaxStatus = 'single' | 'joint';
 
 /*class TaxCalculator {
@@ -149,8 +193,14 @@ interface TableState {
   isInitial?: boolean;
 }
 
-type MonthlyCallback = (prevMonthStates: [TableState, TableState][], currentState: TableState) => TableState;
-type MonthlyStopCondition = (prevMonthStates: [TableState, TableState][], currentState: TableState) => boolean;
+type MonthlyCallback = (
+  prevMonthStates: [TableState, TableState][],
+  currentState: TableState
+) => TableState;
+type MonthlyStopCondition = (
+  prevMonthStates: [TableState, TableState][],
+  currentState: TableState
+) => boolean;
 
 class MonthlyTableReportBuilder {
   initialState: TableState;
@@ -159,7 +209,13 @@ class MonthlyTableReportBuilder {
   midMonthStep: MonthlyCallback;
   postMonthStep: MonthlyCallback;
   postMonthStopCondition: MonthlyStopCondition;
-  constructor (initialState: TableState, preMonthStep: MonthlyCallback, midMonthStep: MonthlyCallback, postMonthStep: MonthlyCallback, postMonthStopCondition: MonthlyStopCondition) {
+  constructor(
+    initialState: TableState,
+    preMonthStep: MonthlyCallback,
+    midMonthStep: MonthlyCallback,
+    postMonthStep: MonthlyCallback,
+    postMonthStopCondition: MonthlyStopCondition
+  ) {
     this.initialState = initialState;
     this.states = [];
     this.preMonthStep = preMonthStep;
@@ -169,7 +225,14 @@ class MonthlyTableReportBuilder {
   }
   execute() {
     this.states = [];
-    const {initialState, states, preMonthStep, midMonthStep, postMonthStep, postMonthStopCondition} = this;
+    const {
+      initialState,
+      states,
+      preMonthStep,
+      midMonthStep,
+      postMonthStep,
+      postMonthStopCondition,
+    } = this;
     let current: [TableState, TableState] = [initialState, initialState];
     states.push(current);
     let i = 0;
@@ -198,7 +261,12 @@ class MonthlyTableReportBuilder {
   }
 }
 
-function rfindIndex<T>(arr: T[], fn: (v: T, i: number) => boolean, end?: number, defaultValue: number = -1): number {
+function rfindIndex<T>(
+  arr: T[],
+  fn: (v: T, i: number) => boolean,
+  end?: number,
+  defaultValue: number = -1
+): number {
   if (end == null) {
     end = arr.length;
   }
@@ -220,18 +288,21 @@ function rfind<T>(arr: T[], fn: (v: T, i: number) => boolean, end?: number): T {
 }
 
 function fmtNum2(n: number): string {
-  const s = `${Math.floor(n * 100 + .5)}`;
+  const s = `${Math.floor(n * 100 + 0.5)}`;
   const s1 = '0'.repeat(Math.max(0, 3 - s.length)) + s;
   return `${s1.substring(0, s1.length - 2)}.${s1.substring(s1.length - 2)}`;
 }
 
 const preMonthStep: MonthlyCallback = (prevStates, currentState) => {
   if ([0, 3, 5, 8].indexOf(currentState.month) !== -1) {
-    const nextState = {...currentState};
+    const nextState = { ...currentState };
     if (currentState.month === 3) {
-      const iEndYear = rfindIndex(prevStates, v => v[0].month === 11);
+      const iEndYear = rfindIndex(prevStates, (v) => v[0].month === 11);
       let totalProfit = 0;
-      let totalEstimatedPayments = prevStates.length >= 4 ? prevStates[prevStates.length - 4][1].estimatedTaxesPaid : 0;
+      let totalEstimatedPayments =
+        prevStates.length >= 4
+          ? prevStates[prevStates.length - 4][1].estimatedTaxesPaid
+          : 0;
       for (let i = Math.max(0, iEndYear - 11); i <= iEndYear; ++i) {
         const cur = prevStates[i][1];
         totalProfit += cur.preTaxProfit;
@@ -241,36 +312,61 @@ const preMonthStep: MonthlyCallback = (prevStates, currentState) => {
       }
       const lastYearTaxes = totalProfit - removeTaxes(totalProfit);
       nextState.memos = [...nextState.memos];
-      nextState.memos.push(`TAX_YEAR: taxes for last year: $${fmtNum2(lastYearTaxes)}`);
-      nextState.memos.push(`TAX_YEAR: you paid $${fmtNum2(totalEstimatedPayments)} in estimated payments`);
+      nextState.memos.push(
+        `TAX_YEAR: taxes for last year: $${fmtNum2(lastYearTaxes)}`
+      );
+      nextState.memos.push(
+        `TAX_YEAR: you paid $${fmtNum2(
+          totalEstimatedPayments
+        )} in estimated payments`
+      );
       if (lastYearTaxes > totalEstimatedPayments) {
         const diff = lastYearTaxes - totalEstimatedPayments;
         nextState.memos.push(`TAX_YEAR: you owe $${fmtNum2(diff)} in taxes`);
         nextState.currentValue -= diff;
       } else if (lastYearTaxes < totalEstimatedPayments) {
         const diff = totalEstimatedPayments - lastYearTaxes;
-        nextState.memos.push(`TAX_YEAR: you get a tax refund of $${fmtNum2(diff)} in taxes`);
+        nextState.memos.push(
+          `TAX_YEAR: you get a tax refund of $${fmtNum2(diff)} in taxes`
+        );
         nextState.currentValue += diff;
       }
-      const currentEstimatedPayment = 1.1 * lastYearTaxes / 4;
+      const currentEstimatedPayment = (1.1 * lastYearTaxes) / 4;
       nextState.estimatedTaxesPaid += currentEstimatedPayment;
-      nextState.memos.push(`TAX_EST: you pay $${fmtNum2(currentEstimatedPayment)} in estimated payment`);
+      nextState.memos.push(
+        `TAX_EST: you pay $${fmtNum2(
+          currentEstimatedPayment
+        )} in estimated payment`
+      );
     } else {
-      const prevEstimatedPayment = rfind(prevStates, v => [0, 3, 5, 8].indexOf(v[0].month) !== -1);
+      const prevEstimatedPayment = rfind(
+        prevStates,
+        (v) => [0, 3, 5, 8].indexOf(v[0].month) !== -1
+      );
       if (prevEstimatedPayment == null || prevEstimatedPayment[0].isInitial) {
         return currentState;
       }
-      const currentEstimatedPayment = prevEstimatedPayment[1].estimatedTaxesPaid;
-      nextState.memos.push(`TAX_EST: you pay $${fmtNum2(currentEstimatedPayment)} in estimated payment`);
+      const currentEstimatedPayment =
+        prevEstimatedPayment[1].estimatedTaxesPaid;
+      nextState.memos.push(
+        `TAX_EST: you pay $${fmtNum2(
+          currentEstimatedPayment
+        )} in estimated payment`
+      );
       nextState.currentValue -= currentEstimatedPayment;
       nextState.estimatedTaxesPaid += currentEstimatedPayment;
     }
     return nextState;
   }
   return currentState;
-}
+};
 
-type MoneyAddPeriod = 'month' | 'quarter-begin' | 'quarter-end' | 'year-begin' | 'year-end';
+type MoneyAddPeriod =
+  | 'month'
+  | 'quarter-begin'
+  | 'quarter-end'
+  | 'year-begin'
+  | 'year-end';
 
 const midMonthStep: MonthlyCallback = (prevStates, currentState) => {
   const period = moneyAddPeriod.value as MoneyAddPeriod;
@@ -289,28 +385,39 @@ const midMonthStep: MonthlyCallback = (prevStates, currentState) => {
   if (moneyAdd.value.length === 0 || +moneyAdd.value === 0) {
     return currentState;
   }
-  const nextState = {...currentState};
+  const nextState = { ...currentState };
   const startTime = prevStates[0][0].year * 12 + prevStates[0][0].month;
   const curTime = currentState.year * 12 + currentState.month;
-  const add: number = +moneyAdd.value * (1 + +moneyAddIncrease.value / 100) ** ((curTime - startTime) / 12);
-  nextState.valueAdded += add
+  const add: number =
+    +moneyAdd.value *
+    (1 + +moneyAddIncrease.value / 100) ** ((curTime - startTime) / 12);
+  nextState.valueAdded += add;
   nextState.currentValue += add;
-  nextState.memos = [...currentState.memos, `ADD: you added $${fmtNum2(add)} to your investments`];
+  nextState.memos = [
+    ...currentState.memos,
+    `ADD: you added $${fmtNum2(add)} to your investments`,
+  ];
   return nextState;
-}
+};
 
 const postMonthStep: MonthlyCallback = (prevStates, currentState) => {
-  const nextState = {...currentState};
+  const nextState = { ...currentState };
   nextState.currentValue *= monthlyRoi;
   nextState.preTaxProfit += nextState.currentValue - currentState.currentValue;
-  nextState.memos = [...currentState.memos, `GROWTH: you grew your value by ${fmtNum2((monthlyRoi - 1) * 100)}%`];
+  nextState.memos = [
+    ...currentState.memos,
+    `GROWTH: you grew your value by ${fmtNum2((monthlyRoi - 1) * 100)}%`,
+  ];
   return nextState;
-}
+};
 
-const postMonthStopCondition: MonthlyStopCondition = (prevStates, currentState) => {
+const postMonthStopCondition: MonthlyStopCondition = (
+  prevStates,
+  currentState
+) => {
   if (tableStopCondition.value === 'invest-nominal-value') {
     return currentState.currentValue >= +tableStopValue.value;
-  } else if (tableStopCondition.value === 'invest-real-value') { 
+  } else if (tableStopCondition.value === 'invest-real-value') {
     const startTime = prevStates[0][0].year * 12 + prevStates[0][0].month;
     const curTime = currentState.year * 12 + currentState.month;
     const inflation = monthlyInflation ** (curTime - startTime);
@@ -318,17 +425,21 @@ const postMonthStopCondition: MonthlyStopCondition = (prevStates, currentState) 
   } else {
     return true;
   }
-}
+};
 
-const MONTHS = months.map(x => x.substring(0, 3));
+const MONTHS = months.map((x) => x.substring(0, 3));
 
-function generateTableRowFromStateGroup(states: [TableState, TableState][], idx: number): HTMLTableRowElement {
+function generateTableRowFromStateGroup(
+  states: [TableState, TableState][],
+  idx: number
+): HTMLTableRowElement {
   const { currentValue: preValue, year, month } = states[idx][0];
   const { currentValue, valueAdded, memos } = states[idx][1];
 
   const startTime = states[0][0].year * 12 + states[0][0].month;
   const curTime = year * 12 + month;
-  const inflation = (1 + +expectedAnnualInflation.value / 100) ** ((curTime - startTime) / 12);
+  const inflation =
+    (1 + +expectedAnnualInflation.value / 100) ** ((curTime - startTime) / 12);
   const tr = document.createElement('tr');
   // Date
   let td = document.createElement('td');
@@ -367,11 +478,22 @@ function removeTaxes(value: number): number {
   } else if (takeOutTaxes.value === '20-and-net') {
     return value * 0.762;
   } else if (takeOutTaxes.value === 'short-term') {
-    return calculateTaxes(value, <'single' | 'joint'>taxStatus.value).netIncome;
+    return calculateTaxes(
+      value,
+      +taxYear.value,
+      taxStatus.value as 'single' | 'joint'
+    ).netIncome;
   } else if (takeOutTaxes.value === 'short-term-custom') {
-    const status = <'single' | 'joint'>taxStatus.value
-    const baseNetIncome = calculateTaxes(+taxCustomData.value, status).netIncome;
-    return calculateTaxes(+taxCustomData.value + value, status).netIncome - baseNetIncome;
+    const status = taxStatus.value as 'single' | 'joint';
+    const baseNetIncome = calculateTaxes(
+      +taxCustomData.value,
+      +taxYear.value,
+      status
+    ).netIncome;
+    return (
+      calculateTaxes(+taxCustomData.value + value, +taxYear.value, status)
+        .netIncome - baseNetIncome
+    );
   } else if (takeOutTaxes.value === 'none') {
     return value;
   } else {
@@ -389,14 +511,21 @@ function shouldTableStop(value: number, inflation: number): boolean {
   }
 }
 
-function generateTableRow(date: string | [string, string], nominalDollars: number, investmentNominalValue: number, investmentRealValue: number): HTMLTableRowElement {
+function generateTableRow(
+  date: string | [string, string],
+  nominalDollars: number,
+  investmentNominalValue: number,
+  investmentRealValue: number
+): HTMLTableRowElement {
   const tr = document.createElement('tr');
   if (typeof date === 'string') {
     tr.innerHTML = `<td colspan="2">${date}</td>`;
   } else {
     tr.innerHTML = `<td>${date[0]}</td><td>${date[1]}</td>`;
   }
-  tr.innerHTML += `<td>${formatDollars(nominalDollars)}</td><td>${formatDollars(investmentNominalValue)}</td><td>${formatDollars(investmentRealValue)}</td>`;
+  tr.innerHTML += `<td>${formatDollars(nominalDollars)}</td><td>${formatDollars(
+    investmentNominalValue
+  )}</td><td>${formatDollars(investmentRealValue)}</td>`;
   return tr;
 }
 
@@ -412,7 +541,8 @@ function fillTableOld() {
   while (!shouldTableStop(value, inflation)) {
     ++i;
     for (m = 0; m < 12; ++m) {
-      const add: number = (+moneyAdd.value) * (1 + +moneyAddIncrease.value / 100) ** (i + m /12);
+      const add: number =
+        +moneyAdd.value * (1 + +moneyAddIncrease.value / 100) ** (i + m / 12);
       // do money add
       if (moneyAddPeriod.value === 'month') {
         value += add;
@@ -445,7 +575,14 @@ function fillTableOld() {
         prevYearValue = value;
       }
 
-      tBody.appendChild(generateTableRow([`Year ${i}`,` Month ${m}`], totalAdded, value, value / inflation));
+      tBody.appendChild(
+        generateTableRow(
+          [`Year ${i}`, ` Month ${m}`],
+          totalAdded,
+          value,
+          value / inflation
+        )
+      );
       if (shouldTableStop(value, inflation)) {
         break;
       }
@@ -465,9 +602,12 @@ function fillTableOld() {
       }*/
     }
     if (i > 100) {
-      tBody.appendChild(generateTableRow(`Year ${i}`, totalAdded, value, value / inflation));
+      tBody.appendChild(
+        generateTableRow(`Year ${i}`, totalAdded, value, value / inflation)
+      );
       const tr = document.createElement('tr');
-      tr.innerHTML = '<td colspan="5">WARNING: TOO LONG - quiting further evaluation</td>';
+      tr.innerHTML =
+        '<td colspan="5">WARNING: TOO LONG - quiting further evaluation</td>';
       tBody.appendChild(tr);
       investTimeToStop.innerText = 'Way Too Long';
       return;
@@ -501,11 +641,12 @@ function fillTable() {
   });
   if (success) {
     const months = builder.states.length % 12;
-    const years = (builder.states.length - months) / 12
+    const years = (builder.states.length - months) / 12;
     investTimeToStop.innerText = `${years} years and ${months} months`;
   } else {
     const tr = document.createElement('tr');
-    tr.innerHTML = '<td colspan="6">WARNING: TOO LONG - quiting further evaluation</td>';
+    tr.innerHTML =
+      '<td colspan="6">WARNING: TOO LONG - quiting further evaluation</td>';
     tBody.appendChild(tr);
     investTimeToStop.innerText = 'Way Too Long';
   }
@@ -517,11 +658,13 @@ let annualInflation: number = 1;
 let monthlyInflation: number = 1;
 
 function onChange() {
-  annualRoi = (1 + (+avgRoi.value) / 100) ** {'day': 365.25, 'week': 365.25 / 7, 'month': 12, 'quarter': 4, 'year': 1}[avgRoiPeriod.value];
-  monthlyRoi = annualRoi ** (1/12);
+  annualRoi =
+    (1 + +avgRoi.value / 100) **
+    { day: 365.25, week: 365.25 / 7, month: 12, quarter: 4, year: 1 }[
+      avgRoiPeriod.value
+    ];
+  monthlyRoi = annualRoi ** (1 / 12);
   annualInflation = 1 + +expectedAnnualInflation.value / 100;
   monthlyInflation = annualInflation ** (1 / 12);
   fillTable();
 }
-
-

@@ -17,6 +17,9 @@
     "ts-node": "^8.3.0",
     "typescript": "^3.5.1"
   },
+  "prettier": {
+    "singleQuote": true
+  },
   "scripts": {
     "build-client": "yarn run parcel build src/index.html && python -c \"import shutil;shutil.copytree('./icons', './dist/icons')\"",
     "build-server": "yarn run tsc ./server/app.ts --target ES2015 --outDir ./dist-server --module commonjs",
