@@ -94,6 +94,9 @@ document.addEventListener('DOMContentLoaded', async function () {
   const pieChartPriInput = <HTMLInputElement>(
     document.getElementById('pie-chart-priority')
   );
+  const taxFilingYear = <HTMLSelectElement>(
+    document.getElementById('tax-filing-year')
+  );
   const taxFilingOption = <HTMLSelectElement>(
     document.getElementById('tax-filing-option')
   );
@@ -193,7 +196,8 @@ document.addEventListener('DOMContentLoaded', async function () {
         (sum + 0.5) | 0
       )}</td><td>\$${invCalculateTaxes(
         ((sum + 0.5) | 0) / 100,
-        <'single' | 'joint'>taxFilingOption.value
+        +taxFilingYear.value,
+        taxFilingOption.value as 'single' | 'joint'
       )}</td>`;
       outputTb.appendChild(tr);
     }
@@ -203,7 +207,7 @@ document.addEventListener('DOMContentLoaded', async function () {
       return;
     }
     const file = budgetFileLoad.files[0];
-    const str = <string>await getPromiseFileReader(file, FR_AS_TXT);
+    const str = (await getPromiseFileReader(file, FR_AS_TXT)) as string;
     const loaded = JSON.parse(str);
     for (let i = 0; i < datas.length; ++i) {
       datas[i] = loaded[i];
