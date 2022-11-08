@@ -1,4 +1,4 @@
-import { invCalculateTaxes, calculateTaxes } from './taxes';
+import { invCalculateTaxes, calculateTaxes, allBrackets } from './taxes';
 let input: HTMLInputElement;
 let inputAlt: HTMLInputElement;
 let output: HTMLInputElement;
@@ -35,6 +35,19 @@ export async function init() {
   taxStatus.addEventListener('change', onChange);
   taxYear.addEventListener('change', onChange);
   option.addEventListener('change', onChangeLabels);
+  [...document.getElementsByClassName('taxes-tax-year')]
+    .filter((x) => x instanceof HTMLSelectElement)
+    .forEach((sel) => {
+      sel.innerHTML = '';
+      Object.keys(allBrackets)
+        .map((key) => {
+          const opt = document.createElement('option');
+          opt.innerText = key;
+          opt.value = key;
+          return opt;
+        })
+        .forEach((opt) => sel.appendChild(opt));
+    });
 }
 
 function onChangeLabels() {

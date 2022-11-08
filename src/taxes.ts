@@ -65,12 +65,53 @@ export const allBrackets = {
       [Infinity, 0.37],
     ],
   },
+  2023: {
+    single: [
+      [13850, 0],
+      [11000, 0.1],
+      [44725 - 11000, 0.12],
+      [95375 - 44725, 0.22],
+      [182100 - 95375, 0.24],
+      [231250 - 182100, 0.32],
+      [578125 - 231250, 0.35],
+      [Infinity, 0.37],
+    ],
+    joint: [
+      [27700, 0],
+      [22000, 0.1],
+      [89450 - 22000, 0.12],
+      [190750 - 89450, 0.22],
+      [364200 - 190750, 0.24],
+      [462500 - 364200, 0.32],
+      [693750 - 462500, 0.35],
+      [Infinity, 0.37],
+    ],
+  },
 };
+
+export class TaxCalculator {
+  private brackets: typeof allBrackets[keyof typeof allBrackets][
+    | 'single'
+    | 'joint'];
+  private curBracket: number;
+
+  constructor(year: keyof typeof allBrackets, option: 'single' | 'joint') {
+    this.brackets = allBrackets[year][option];
+    this.curBracket = 0;
+  }
+  payTaxes(income: number): {
+    netIncome: number;
+    taxes: number;
+    socialSecurity: number;
+    medicare: number;
+  } {}
+}
 
 export function calculateTaxes(
   income: number,
   year: number,
-  option: "single" | "joint" = "single"
+  option: 'single' | 'joint' = 'single',
+  type: 'w-2' | 'other-income' | 'self-employment' = 'w-2'
 ) {
   const brackets = allBrackets[year][option];
   income = Math.floor(income + 0.5);
@@ -94,7 +135,7 @@ export function calculateTaxes(
 export function invCalculateTaxes(
   netIncome: number,
   year: number,
-  option: "single" | "joint" = "single"
+  option: 'single' | 'joint' = 'single'
 ): number {
   let lower = netIncome;
   let upper = 2 * netIncome;

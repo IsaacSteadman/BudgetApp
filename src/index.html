@@ -1,166 +1,203 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Budgeting | IsaacSteadman.com</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" type="text/css" media="screen" href="main.less" />
+    <script src="main.ts"></script>
+  </head>
 
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Budgeting | IsaacSteadman.com</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" type="text/css" media="screen" href="main.less">
-  <script src="main.ts"></script>
-</head>
-
-<body>
-  <h2>Daily</h2>
-  <table id="daily" class="edit-table"></table>
-  <h2>Dayoffly</h2>
-  <table id="dayoffly" class="edit-table"></table>
-  <h2>Business daily</h2>
-  <table id="business-daily" class="edit-table"></table>
-  <h2>Business Weekly</h2>
-  <table id="business-weekly" class="edit-table"></table>
-  <h2>Weekly</h2>
-  <table id="weekly" class="edit-table"></table>
-  <h2>Monthly</h2>
-  <table id="monthly" class="edit-table"></table>
-  <h2>Quarterly</h2>
-  <table id="quarterly" class="edit-table"></table>
-  <h2>Half-yearly</h2>
-  <table id="half-yearly" class="edit-table"></table>
-  <h2>Yearly</h2>
-  <table id="yearly" class="edit-table"></table>
-  <div id="results">
-    <h2>Results</h2>
-    <span>Yearly Spend (USD)</span> <br />
-    Tax Filing Method: <select id="tax-filing-option">
-      <option value="single">Single</option>
-      <option value="joint">Joint</option>
-    </select>
-    <table id="output">
-      <thead>
-        <tr>
-          <th>Priority Number</th>
-          <th>Priority Subtotal</th>
-          <th>Cumulative Priority Sum</th>
-          <th>Required Gross Income</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-    Open a budget: <input id="load-file" type="file" /> <br />
-    Save this budget: <input id="save-file-name" type="text" />.json <button id="save-file">Save</button> <br />
-    <h2>Budget pie chart</h2>
-    Priority: <input type="number" id="pie-chart-priority" min="0" step="1" /> <br />
-    <svg id="pie-chart" viewBox="0 0 512 512" width="512" height="512">
-    </svg>
-  </div>
-  <div id="tax-calc">
-    <h2>Tax Calculator</h2>
-    Calculation Direction: <select id="tax-calculation-direction" value="pre-to-post">
-      <option value="pre-to-post">Pre-tax income to post-tax income</option>
-      <option value="post-to-pre">Post-tax income to pre-tax income</option>
-    </select> <br />
-    Tax Year: <select id="tax-year" value="single">
-      <option value="2020">2020</option>
-      <option value="2021">2021</option>
-      <option value="2022">2022</option>
-    </select> <br />
-    Single or Joint: <select id="tax-status" value="single">
-      <option value="single">Single</option>
-      <option value="joint">Married Filing Jointly</option>
-    </select> <br />
-    <span id="tax-input-label">Pre-tax income</span> (input) <input id="tax-input" type="number" /> <br />
-    <span id="tax-input-label-alt">Pre-tax income</span> (optional input) <input id="tax-input-alt" type="number" />
-    <br />
-    <span id="tax-output-label">Net income after taxes</span> (output) <input id="tax-output" readonly type="number" />
-    <br />
-    <span id="tax-output-label-alt">Net income after taxes</span> (optional output) <input id="tax-output-alt" readonly
-      type="number" />
-    <br />
-  </div>
-  <div id="invest-calc">
-    <h2>Investing Calculator Utility</h2>
-    Average Return on Investment (%): <input id="invest-avg-return" type="number" /> <select id="invest-return-period">
-      <option value="year">Annually</option>
-      <option value="quarter">Quarterly</option>
-      <option value="month">Monthly</option>
-      <option value="week">Weekly</option>
-      <option value="day">Daily</option>
-    </select> <br />
-    Initial Value of Investments: <input id="invest-initial-value" type="number" /><br />
-    Estimated Payments Already Made: <input id="estimated-taxes-paid" type="number" step="any" /><br />
-    Pre-Tax Profit: <input id="pre-tax-profit" type="number" step="any" /><br />
-    Starting Year: <input id="start-year" type="number" step="1" /><br />
-    Starting Month: <select id="start-month">
-      <option value="0">January</option>
-      <option value="1">February</option>
-      <option value="2">March</option>
-      <option value="3">April</option>
-      <option value="4">May</option>
-      <option value="5">June</option>
-      <option value="6">July</option>
-      <option value="7">August</option>
-      <option value="8">September</option>
-      <option value="9">October</option>
-      <option value="10">November</option>
-      <option value="11">December</option>
-    </select><br />
-    Take out taxes: <select id="invest-taxes">
-      <option value="none">No Taxes</option>
-      <option value="15-only">15%</option>
-      <option value="15-and-net">15% + 3.8%</option>
-      <option value="20-only">20%</option>
-      <option value="20-and-net">20% + 3.8%</option>
-      <option value="short-term">short-term capital gains (normal tax rate)</option>
-      <option value="short-term-custom">short-term capital gains with custom tax bracket</option>
-      <option disabled value="custom">custom tax rate</option>
-    </select> <br />
-    Additional tax info: <input id="invest-taxes-custom" type="number" /> (this is the base pre-tax income if custom tax
-    bracket specified)<br />
-    Tax Filing Year: <select id="invest-taxes-year">
-      <option value="2020">2020</option>
-      <option value="2021">2021</option>
-      <option value="2022">2022</option>
-    </select> <br />
-    Tax Filing Status: <select id="invest-taxes-status">
-      <option value="single">Single</option>
-      <option value="joint">Married Filing Jointly</option>
-    </select> <br />
-    Money added to investments: <input id="invest-money-input" type="number" /> <select id="invest-money-input-period"
-      value="month">
-      <option value="year-begin">Annually (before first month)</option>
-      <option value="year-end">Annually (before last month)</option>
-      <option value="quarter-begin">Quarterly (before first month)</option>
-      <option value="quarter-end">Quarterly (before last month)</option>
-      <option value="month">Monthly</option>
-      <!--<option value="week">Weekly</option>-->
-      <!--<option value="day">Daily</option>-->
-    </select> Increasing by <input id="invest-money-input-increase" type="number" value="2" /> Percent Annually <br />
-    Expected Annual Inflation Rate (%): <input id="invest-inflation-rate" type="number" value="2" /> <br />
-    <!--Table Report Period: <select id="invest-table-period" value="year">
+  <body>
+    <h2>Daily</h2>
+    <table id="daily" class="edit-table"></table>
+    <h2>Dayoffly</h2>
+    <table id="dayoffly" class="edit-table"></table>
+    <h2>Business daily</h2>
+    <table id="business-daily" class="edit-table"></table>
+    <h2>Business Weekly</h2>
+    <table id="business-weekly" class="edit-table"></table>
+    <h2>Weekly</h2>
+    <table id="weekly" class="edit-table"></table>
+    <h2>Monthly</h2>
+    <table id="monthly" class="edit-table"></table>
+    <h2>Quarterly</h2>
+    <table id="quarterly" class="edit-table"></table>
+    <h2>Half-yearly</h2>
+    <table id="half-yearly" class="edit-table"></table>
+    <h2>Yearly</h2>
+    <table id="yearly" class="edit-table"></table>
+    <div id="results">
+      <h2>Results</h2>
+      <span>Yearly Spend (USD)</span> <br />
+      Tax Filing Method:
+      <select id="tax-filing-option">
+        <option value="single">Single</option>
+        <option value="joint">Joint</option>
+      </select>
+      <table id="output">
+        <thead>
+          <tr>
+            <th>Priority Number</th>
+            <th>Priority Subtotal</th>
+            <th>Cumulative Priority Sum</th>
+            <th>Required Gross Income</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      Open a budget: <input id="load-file" type="file" /> <br />
+      Save this budget: <input id="save-file-name" type="text" />.json
+      <button id="save-file">Save</button> <br />
+      <h2>Budget pie chart</h2>
+      Priority:
+      <input type="number" id="pie-chart-priority" min="0" step="1" /> <br />
+      <svg id="pie-chart" viewBox="0 0 512 512" width="512" height="512"></svg>
+    </div>
+    <div id="tax-calc">
+      <h2>Tax Calculator</h2>
+      Calculation Direction:
+      <select id="tax-calculation-direction" value="pre-to-post">
+        <option value="pre-to-post">Pre-tax income to post-tax income</option>
+        <option value="post-to-pre">Post-tax income to pre-tax income</option>
+      </select>
+      <br />
+      Tax Year:
+      <select id="tax-year" value="single" class="taxes-tax-year"></select>
+      <br />
+      Single or Joint:
+      <select id="tax-status" value="single">
+        <option value="single">Single</option>
+        <option value="joint">Married Filing Jointly</option>
+      </select>
+      <br />
+      <span id="tax-input-label">Pre-tax income</span> (input)
+      <input id="tax-input" type="number" /> <br />
+      <span id="tax-input-label-alt">Pre-tax income</span> (optional input)
+      <input id="tax-input-alt" type="number" />
+      <br />
+      <span id="tax-output-label">Net income after taxes</span> (output)
+      <input id="tax-output" readonly type="number" />
+      <br />
+      <span id="tax-output-label-alt">Net income after taxes</span> (optional
+      output) <input id="tax-output-alt" readonly type="number" />
+      <br />
+    </div>
+    <div id="invest-calc">
+      <h2>Investing Calculator Utility</h2>
+      Average Return on Investment (%):
+      <input id="invest-avg-return" type="number" />
+      <select id="invest-return-period">
+        <option value="year">Annually</option>
+        <option value="quarter">Quarterly</option>
+        <option value="month">Monthly</option>
+        <option value="week">Weekly</option>
+        <option value="day">Daily</option>
+      </select>
+      <br />
+      Initial Value of Investments:
+      <input id="invest-initial-value" type="number" /><br />
+      Estimated Payments Already Made:
+      <input id="estimated-taxes-paid" type="number" step="any" /><br />
+      Pre-Tax Profit:
+      <input id="pre-tax-profit" type="number" step="any" /><br />
+      Starting Year: <input id="start-year" type="number" step="1" /><br />
+      Starting Month:
+      <select id="start-month">
+        <option value="0">January</option>
+        <option value="1">February</option>
+        <option value="2">March</option>
+        <option value="3">April</option>
+        <option value="4">May</option>
+        <option value="5">June</option>
+        <option value="6">July</option>
+        <option value="7">August</option>
+        <option value="8">September</option>
+        <option value="9">October</option>
+        <option value="10">November</option>
+        <option value="11">December</option></select
+      ><br />
+      Take out taxes:
+      <select id="invest-taxes">
+        <option value="none">No Taxes</option>
+        <option value="15-only">15%</option>
+        <option value="15-and-net">15% + 3.8%</option>
+        <option value="20-only">20%</option>
+        <option value="20-and-net">20% + 3.8%</option>
+        <option value="short-term">
+          short-term capital gains (normal tax rate)
+        </option>
+        <option value="short-term-custom">
+          short-term capital gains with custom tax bracket
+        </option>
+        <option disabled value="custom">custom tax rate</option>
+      </select>
+      <br />
+      Additional tax info:
+      <input id="invest-taxes-custom" type="number" /> (this is the base pre-tax
+      income if custom tax bracket specified)<br />
+      Tax Filing Year:
+      <select id="invest-taxes-year" class="taxes-tax-year"></select>
+      <br />
+      Tax Filing Status:
+      <select id="invest-taxes-status">
+        <option value="single">Single</option>
+        <option value="joint">Married Filing Jointly</option>
+      </select>
+      <br />
+      Money added to investments:
+      <input id="invest-money-input" type="number" />
+      <select id="invest-money-input-period" value="month">
+        <option value="year-begin">Annually (before first month)</option>
+        <option value="year-end">Annually (before last month)</option>
+        <option value="quarter-begin">Quarterly (before first month)</option>
+        <option value="quarter-end">Quarterly (before last month)</option>
+        <option value="month">Monthly</option>
+        <!--<option value="week">Weekly</option>-->
+        <!--<option value="day">Daily</option>-->
+      </select>
+      Increasing by
+      <input id="invest-money-input-increase" type="number" value="2" /> Percent
+      Annually <br />
+      Expected Annual Inflation Rate (%):
+      <input id="invest-inflation-rate" type="number" value="2" /> <br />
+      <!--Table Report Period: <select id="invest-table-period" value="year">
       <option value="year">Annually</option>
       <option value="quarter">Quarterly</option>
       <option value="month">Monthly</option>
     </select> <br/> -->
-    Table stop condition <select id="invest-table-stop">
-      <option value="invest-nominal-value">Stop at Investment Nominal Value</option>
-      <option value="invest-real-value">Stop at Investment Real Value</option>
-    </select> (value) <input id="invest-table-stop-value" type="number" /> <br />
-    Time until investment goal reached: <span id="invest-time-to-stop"></span>
-    <table id="invest-table">
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th>Dollars Added</th>
-          <th>Investment Value <br /> (nominal before month)</th>
-          <th>Investment Value <br /> (nominal after month)</th>
-          <th>Investment Value <br /> (real relative to start)</th>
-          <th>Memos</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </div>
-</body>
-
+      Table stop condition
+      <select id="invest-table-stop">
+        <option value="invest-nominal-value">
+          Stop at Investment Nominal Value
+        </option>
+        <option value="invest-real-value">Stop at Investment Real Value</option>
+      </select>
+      (value) <input id="invest-table-stop-value" type="number" /> <br />
+      Time until investment goal reached: <span id="invest-time-to-stop"></span>
+      <table id="invest-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Dollars Added</th>
+            <th>
+              Investment Value <br />
+              (nominal before month)
+            </th>
+            <th>
+              Investment Value <br />
+              (nominal after month)
+            </th>
+            <th>
+              Investment Value <br />
+              (real relative to start)
+            </th>
+            <th>Memos</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </body>
 </html>
