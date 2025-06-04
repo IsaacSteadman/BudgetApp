@@ -158,7 +158,7 @@ document.addEventListener('DOMContentLoaded', async function () {
   ]);
   const onChange = function () {
     const priArr = [];
-    const dataLog = [];
+    const dataLog: string[] = [];
     const pieChartLineItems = {};
     const priPieChart = +pieChartPriInput.value;
     datas.forEach((dataArr, i) => {
@@ -203,7 +203,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     }
   };
   budgetFileLoad.addEventListener('change', async function (e) {
-    if (budgetFileLoad.files.length === 0) {
+    if (!budgetFileLoad.files?.length) {
       return;
     }
     const file = budgetFileLoad.files[0];

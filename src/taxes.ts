@@ -107,12 +107,34 @@ export const allBrackets = {
       [487450 - 383900, 0.32],
       [731200 - 487450, 0.35],
       [Infinity, 0.37],
-    ]
-  }
+    ],
+  },
+  2025: {
+    single: [
+      [15000, 0],
+      [11925, 0.1],
+      [48475 - 11925, 0.12],
+      [103350 - 48475, 0.22],
+      [197300 - 103350, 0.24],
+      [250525 - 197300, 0.32],
+      [626350 - 250525, 0.35],
+      [Infinity, 0.37],
+    ],
+    joint: [
+      [30000, 0],
+      [23850, 0.1],
+      [96950 - 23850, 0.12],
+      [206700 - 96950, 0.22],
+      [394600 - 206700, 0.24],
+      [501050 - 394600, 0.32],
+      [751600 - 501050, 0.35],
+      [Infinity, 0.37],
+    ],
+  },
 };
 
 export class TaxCalculator {
-  private brackets: typeof allBrackets[keyof typeof allBrackets][
+  private brackets: (typeof allBrackets)[keyof typeof allBrackets][
     | 'single'
     | 'joint'];
   private curBracket: number;
@@ -121,12 +143,6 @@ export class TaxCalculator {
     this.brackets = allBrackets[year][option];
     this.curBracket = 0;
   }
-  payTaxes(income: number): {
-    netIncome: number;
-    taxes: number;
-    socialSecurity: number;
-    medicare: number;
-  } {}
 }
 
 export function calculateTaxes(

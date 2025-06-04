@@ -279,7 +279,11 @@ function rfindIndex<T>(
   return defaultValue;
 }
 
-function rfind<T>(arr: T[], fn: (v: T, i: number) => boolean, end?: number): T {
+function rfind<T>(
+  arr: T[],
+  fn: (v: T, i: number) => boolean,
+  end?: number
+): T | null {
   const i = rfindIndex(arr, fn, end);
   if (i === -1) {
     return null;
@@ -662,7 +666,7 @@ function onChange() {
     (1 + +avgRoi.value / 100) **
     { day: 365.25, week: 365.25 / 7, month: 12, quarter: 4, year: 1 }[
       avgRoiPeriod.value
-    ];
+    ]!;
   monthlyRoi = annualRoi ** (1 / 12);
   annualInflation = 1 + +expectedAnnualInflation.value / 100;
   monthlyInflation = annualInflation ** (1 / 12);
