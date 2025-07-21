@@ -21,11 +21,11 @@
     "singleQuote": true
   },
   "scripts": {
-    "build-client": "yarn run parcel build src/index.html && python -c \"import shutil;shutil.copytree('./icons', './dist/icons')\"",
-    "build-server": "yarn run tsc ./server/app.ts --target ES2015 --outDir ./dist-server --module commonjs",
-    "start-client": "yarn run parcel serve src/index.html",
-    "start-server": "yarn run build-server && node ./dist-server/app.js",
-    "start": "yarn run start-server",
+    "build-client": "npx parcel build src/index.html && python -c \"import shutil;shutil.copytree('./icons', './dist/icons')\"",
+    "build-server": "npx tsc ./server/app.ts --target ES2015 --outDir ./dist-server --module commonjs",
+    "start-client": "npx parcel serve src/index.html",
+    "start-server": "npm run build-server && node ./dist-server/app.js",
+    "start": "npm run start-server",
     "test-server": "yarn run mocha -r ts-node/register test-server/**/test_*.ts",
     "test-client": "yarn run mocha -r ts-node/register test-client/**/test_*.ts"
   }
